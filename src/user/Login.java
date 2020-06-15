@@ -6,6 +6,9 @@
 package user;
 
 import admin.*;
+import entity.User;
+import factory.UserFactory;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -39,11 +42,14 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jTextField1.setText("hanjie");
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
             }
         });
+
+        jTextField2.setText("123");
 
         jLabel1.setText("账号：");
 
@@ -113,6 +119,17 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        User user = new User();
+        user.setUsername(this.jTextField1.getText());
+        user.setPassword(this.jTextField2.getText());
+        User users = UserFactory.getUserDAOInstance().userLogin(user);
+        if(users.getUsername() != null){
+            dispose();
+            Main m = new Main(users);
+            m.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(null,"登录失败");
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
