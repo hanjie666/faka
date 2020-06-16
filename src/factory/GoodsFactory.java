@@ -3,14 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package factory;
 
-import entity.User;
+import dao.proxy.GoodsDaoProxy;
 
 /**
  *
  * @author 良匠
  */
-public interface UserDao {
-    User userLogin(User user);
+public class GoodsFactory {
+    public static GoodsDaoProxy getGoodsDAOInstance(){//取得DAO实例 
+         return new GoodsDaoProxy();//返回代理实例 
+    } 
 }

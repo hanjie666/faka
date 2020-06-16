@@ -7,13 +7,14 @@ package dao.proxy;
 
 import dao.UserDao;
 import dao.impl.UserDaoImpl;
+import entity.User;
 import utils.JDBCUtil;
 
 /**
  *
  * @author 良匠
  */
-public class UserDaoProxy {
+public class UserDaoProxy implements UserDao{
     private JDBCUtil dbc=null;//定义数据库连接 
     private UserDao dao=null;//定义DAO接口 
     public UserDaoProxy(){ 
@@ -24,4 +25,11 @@ public class UserDaoProxy {
         } 
         this.dao=new UserDaoImpl(dbc.getCon()); 
     } 
+
+    @Override
+    public User userLogin(User user) {
+       User users = dao.userLogin(user);
+       dbc.closeCon();
+       return users;
+    }
 }

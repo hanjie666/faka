@@ -15,7 +15,7 @@ import java.sql.SQLException;
  */
 public class JDBCUtil {
      private static final String DBdriver="com.mysql.cj.jdbc.Driver";
-	private static final String DBURL="jdbc:mysql://139.9.57.193:3306/faka_system?useSSL=false&serverTimezone=UTC"; 
+	private static final String DBURL="jdbc:mysql://139.9.57.193:3306/faka_system?useSSL=false&serverTimezone=UTC&characterEncoding=utf8"; 
 	private static final String DBUSER="root"; 
 	private static final String DBPASS="chj0609"; 
 	private Connection con=null; 

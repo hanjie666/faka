@@ -3,14 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
-
-import entity.User;
+package entity;
 
 /**
  *
  * @author 良匠
  */
-public interface UserDao {
-    User userLogin(User user);
+public class Order {
+    
 }

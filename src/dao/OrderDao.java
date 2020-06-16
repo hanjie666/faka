@@ -5,12 +5,11 @@
  */
 package dao;
 
-import entity.User;
-
 /**
  *
  * @author 良匠
  */
-public interface UserDao {
-    User userLogin(User user);
+public interface OrderDao {
+    //查询所有商品分类
+    
 }

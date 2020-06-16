@@ -6,8 +6,12 @@
 package user;
 
 import admin.*;
+import entity.Goods;
 import entity.User;
 import factory.GoodsFactory;
+import java.awt.ItemSelectable;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 
 /**
@@ -16,17 +20,51 @@ import java.util.List;
  */
 public class Main extends javax.swing.JFrame {
 
+    
+    public void getGoods( List<Goods> list){
+        this.jComboBox2.removeAllItems();
+        for(Goods goods : list){
+            this.jComboBox2.addItem(goods.getGname());
+        } 
+    }
+    
+    public void setGoodDetial(Goods goods){
+        this.jLabel7.setText(String.valueOf(goods.getGstock()));
+        this.jLabel9.setText(String.valueOf(goods.getGprice()));
+        this.jTextPane1.setText(goods.getGintroduce());
+    }
+    
     /**
      * Creates new form Main
      */
     public Main(User user) {
         initComponents();
+        setLocationRelativeTo(null);
         this.jLabel17.setText(user.getUsername());
         this.money.setText(String.valueOf(user.getMoney()));
         List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
         for(String goodstype : list){
             this.jComboBox1.addItem(goodstype);
         } 
+        ItemListener itemListener = new ItemListener() { 
+            public void itemStateChanged(ItemEvent itemEvent) { 
+                String name = (String)itemEvent.getItem();
+                List<Goods> list = GoodsFactory.getGoodsDAOInstance().getGoods(name);
+                getGoods(list);
+            } 
+        };
+        
+        ItemListener itemListener2 = new ItemListener() { 
+            public void itemStateChanged(ItemEvent itemEvent) { 
+                String name = (String)itemEvent.getItem();
+                Goods goods = GoodsFactory.getGoodsDAOInstance().getGoodsDetial(name);
+                setGoodDetial(goods);
+            } 
+        };
+        
+        this.jComboBox1.addItemListener(itemListener);
+        this.jComboBox2.addItemListener(itemListener2);
+        
     }
     public Main() {
         initComponents();
@@ -51,8 +89,6 @@ public class Main extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
@@ -71,6 +107,7 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "请选择分类" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -81,7 +118,7 @@ public class Main extends javax.swing.JFrame {
 
         jLabel4.setText("商品名称");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "请选择商品" }));
 
         jLabel5.setText("购买数量");
 
@@ -89,21 +126,22 @@ public class Main extends javax.swing.JFrame {
 
         jLabel6.setText("库存");
 
-        jLabel7.setText("100");
+        jLabel7.setText("0");
 
         jLabel8.setText("单价");
 
-        jLabel9.setText("3");
-
-        jLabel10.setText("总金额");
-
-        jLabel11.setText("100");
+        jLabel9.setText("0");
 
         jLabel12.setText("联系邮箱");
 
         jTextField2.setText("1564704018@qq.com");
 
         jButton2.setText("确定支付");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel13.setText("元");
 
@@ -168,29 +206,24 @@ public class Main extends javax.swing.JFrame {
                                 .addComponent(jButton2)
                                 .addGap(110, 110, 110))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE)
+                                            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                             .addComponent(jLabel13)
                                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING))
+                                    .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel16, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jComboBox2, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(19, 19, 19)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel6)
-                                            .addComponent(jLabel10))
-                                        .addGap(27, 27, 27)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
-                                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(jLabel6)
+                                        .addGap(39, 39, 39)
+                                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addComponent(jButton4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -227,8 +260,6 @@ public class Main extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel8)
                     .addComponent(jLabel9)
-                    .addComponent(jLabel10)
-                    .addComponent(jLabel11)
                     .addComponent(jLabel13))
                 .addGap(30, 30, 30)
                 .addComponent(jLabel16)
@@ -252,6 +283,20 @@ public class Main extends javax.swing.JFrame {
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        User user = new User();
+        user.setUsername(this.jLabel17.getText());
+        user.setMoney(Integer.parseInt(this.money.getText()));
+        System.out.println("1");
+        Goods goods = new Goods();
+        goods.setGname((String)this.jComboBox2.getSelectedItem());
+        goods.setGprice(Integer.parseInt(this.jLabel9.getText()));
+        System.out.println("2");
+        UserPay pay = new UserPay(goods,Integer.parseInt(this.jTextField1.getText()),this.jTextField2.getText(),user);
+        pay.setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -297,8 +342,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
