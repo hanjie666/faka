@@ -14,4 +14,7 @@ public interface CodeDao {
     String[] getCode(String gname,int num);
     //标记卡密已使用
     int useCode(String code);
+    
+    //获取卡密库存
+    int getGoodsNum(String gname);
 }

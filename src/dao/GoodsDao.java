@@ -24,4 +24,7 @@ public interface GoodsDao {
     
     //根据商品名字查询商品
     Goods getGoodsDetial(String gname);
+    
+    
+    
 }

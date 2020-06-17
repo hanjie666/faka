@@ -8,6 +8,7 @@ package user;
 import admin.*;
 import entity.Goods;
 import entity.User;
+import factory.CodeFactory;
 import factory.GoodsFactory;
 import java.awt.ItemSelectable;
 import java.awt.event.ItemEvent;
@@ -37,7 +38,10 @@ import org.jvnet.substance.skin.SubstanceAutumnLookAndFeel;
  * @author 良匠
  */
 public class Main extends javax.swing.JFrame {
-
+    User user = new User();
+    
+    
+    
     
     public void getGoods( List<Goods> list){
         this.jComboBox2.removeAllItems();
@@ -47,7 +51,7 @@ public class Main extends javax.swing.JFrame {
     }
     
     public void setGoodDetial(Goods goods){
-        this.jLabel7.setText(String.valueOf(goods.getGstock()));
+        this.jLabel7.setText(String.valueOf(CodeFactory.getCodeDAOInstance().getGoodsNum(goods.getGname())));
         this.jLabel9.setText(String.valueOf(goods.getGprice()));
         this.jTextPane1.setText(goods.getGintroduce());
     }
@@ -58,6 +62,7 @@ public class Main extends javax.swing.JFrame {
     public Main(User user) {
         initComponents();
         setLocationRelativeTo(null);
+        this.user = user;
         this.jLabel17.setText(user.getUsername());
         this.money.setText(String.valueOf(user.getMoney()));
         List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
@@ -86,6 +91,31 @@ public class Main extends javax.swing.JFrame {
     }
     public Main() {
         initComponents();
+        setLocationRelativeTo(null);
+        this.jLabel17.setText(user.getUsername());
+        
+        List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
+        for(String goodstype : list){
+            this.jComboBox1.addItem(goodstype);
+        } 
+        ItemListener itemListener = new ItemListener() { 
+            public void itemStateChanged(ItemEvent itemEvent) { 
+                String name = (String)itemEvent.getItem();
+                List<Goods> list = GoodsFactory.getGoodsDAOInstance().getGoods(name);
+                getGoods(list);
+            } 
+        };
+        
+        ItemListener itemListener2 = new ItemListener() { 
+            public void itemStateChanged(ItemEvent itemEvent) { 
+                String name = (String)itemEvent.getItem();
+                Goods goods = GoodsFactory.getGoodsDAOInstance().getGoodsDetial(name);
+                setGoodDetial(goods);
+            } 
+        };
+        
+        this.jComboBox1.addItemListener(itemListener);
+        this.jComboBox2.addItemListener(itemListener2);
     }
 
     /**
@@ -343,7 +373,6 @@ public class Main extends javax.swing.JFrame {
         //</editor-fold>
          SwingUtilities.invokeLater(new Runnable() {  
             public void run() {  
-//                SubstanceLookAndFeel.setSkin(new ModerateSkin());  
                 try {                    
                     new Main().setVisible(true);
                 } catch (Exception e) {  
@@ -354,19 +383,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-//                try { 
-//                   UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel");
-//                    JFrame.setDefaultLookAndFeelDecorated(true);
-//                } catch (ClassNotFoundException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (InstantiationException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (IllegalAccessException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (UnsupportedLookAndFeelException ex) {
-//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//                new Main().setVisible(true); 
+                
             }
         });
     }

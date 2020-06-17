@@ -39,5 +39,12 @@ public class CodeProxy implements CodeDao{
        dbc.closeCon();
        return res;
     }
+
+    @Override
+    public int getGoodsNum(String gname) {
+        int num = dao.getGoodsNum(gname);
+        dbc.closeCon();
+        return num;
+    }
     
 }

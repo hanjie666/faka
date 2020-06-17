@@ -64,6 +64,26 @@ public class CodeDaoImpl implements CodeDao{
         }
           return 0;
     }
+
+    @Override
+    public int getGoodsNum(String gname) {
+        try {
+         String sql="select * from gcode where gname = ? and state = ?";
+         ps = this.con.prepareStatement(sql);
+         ps.setString(1,gname);
+         ps.setInt(2,1);
+         ResultSet rs = ps.executeQuery();
+         int i = 0;
+         while(rs.next()){
+            i++;
+         }
+         return i;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(GoodsDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+         return  0;
+    }
  
     
 }

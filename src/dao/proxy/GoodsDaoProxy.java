@@ -47,5 +47,7 @@ public class GoodsDaoProxy implements GoodsDao{
         dbc.closeCon();
         return goods;
     }
+
+    
     
 }
