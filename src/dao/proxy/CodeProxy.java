@@ -5,38 +5,39 @@
  */
 package dao.proxy;
 
-import dao.UserDao;
-import dao.impl.UserDaoImpl;
-import entity.User;
+import dao.AdminDao;
+import dao.CodeDao;
+import dao.impl.AdminDaoImpl;
+import dao.impl.CodeDaoImpl;
 import utils.JDBCUtil;
 
 /**
  *
  * @author 良匠
  */
-public class UserDaoProxy implements UserDao{
+public class CodeProxy implements CodeDao{
     private JDBCUtil dbc=null;//定义数据库连接 
-    private UserDao dao=null;//定义DAO接口 
-    public UserDaoProxy(){ 
+    private CodeDao dao=null;//定义DAO接口 
+    public CodeProxy(){ 
         try{ 
            this.dbc=new JDBCUtil();//实例化数据库连接  
         }catch(Exception e){ 
             e.printStackTrace(); 
         } 
-        this.dao=new UserDaoImpl(dbc.getCon()); 
+        this.dao=new CodeDaoImpl(dbc.getCon()); 
     } 
-
     @Override
-    public User userLogin(User user) {
-       User users = dao.userLogin(user);
+    public String[] getCode(String gname, int num) {
+       String[] codes = dao.getCode(gname, num);
        dbc.closeCon();
-       return users;
+       return codes;
     }
 
     @Override
-    public int updateUserMoney(User user) {
-       int res = dao.updateUserMoney(user);
+    public int useCode(String code) {
+       int res = dao.useCode(code);
        dbc.closeCon();
        return res;
     }
+    
 }

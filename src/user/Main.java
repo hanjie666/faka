@@ -13,6 +13,24 @@ import java.awt.ItemSelectable;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import org.jvnet.substance.SubstanceLookAndFeel;
+import org.jvnet.substance.api.skin.GeminiSkin;
+import org.jvnet.substance.painter.border.StandardBorderPainter;
+import org.jvnet.substance.painter.gradient.StandardGradientPainter;
+import org.jvnet.substance.shaper.ClassicButtonShaper;
+import org.jvnet.substance.skin.AutumnSkin;
+import org.jvnet.substance.skin.BusinessBlackSteelSkin;
+import org.jvnet.substance.skin.MistSilverSkin;
+import org.jvnet.substance.skin.ModerateSkin;
+import org.jvnet.substance.skin.RavenSkin;
+import org.jvnet.substance.skin.SaharaSkin;
+import org.jvnet.substance.skin.SubstanceAutumnLookAndFeel;
 
 /**
  *
@@ -289,11 +307,9 @@ public class Main extends javax.swing.JFrame {
         User user = new User();
         user.setUsername(this.jLabel17.getText());
         user.setMoney(Integer.parseInt(this.money.getText()));
-        System.out.println("1");
         Goods goods = new Goods();
         goods.setGname((String)this.jComboBox2.getSelectedItem());
         goods.setGprice(Integer.parseInt(this.jLabel9.getText()));
-        System.out.println("2");
         UserPay pay = new UserPay(goods,Integer.parseInt(this.jTextField1.getText()),this.jTextField2.getText(),user);
         pay.setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -325,11 +341,32 @@ public class Main extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-
+         SwingUtilities.invokeLater(new Runnable() {  
+            public void run() {  
+//                SubstanceLookAndFeel.setSkin(new ModerateSkin());  
+                try {                    
+                    new Main().setVisible(true);
+                } catch (Exception e) {  
+                    e.printStackTrace();  
+                }  
+            }  
+        });  
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+//                try { 
+//                   UIManager.setLookAndFeel("org.jvnet.substance.skin.SubstanceBusinessBlackSteelLookAndFeel");
+//                    JFrame.setDefaultLookAndFeelDecorated(true);
+//                } catch (ClassNotFoundException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (InstantiationException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (IllegalAccessException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                } catch (UnsupportedLookAndFeelException ex) {
+//                    Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+//                }
+//                new Main().setVisible(true); 
             }
         });
     }

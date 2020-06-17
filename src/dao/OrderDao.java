@@ -10,6 +10,6 @@ package dao;
  * @author 良匠
  */
 public interface OrderDao {
-    //查询所有商品分类
+    //
     
 }

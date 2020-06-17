@@ -46,4 +46,23 @@ public class UserDaoImpl implements UserDao{
      } 
        return null;
     }
+
+    @Override
+    public int updateUserMoney(User user) {
+         try{
+            String sql = "update users set money = ?  where username = ?";
+            ps=this.con.prepareStatement(sql);
+            ps.setInt(1,user.getMoney());
+            ps.setString(2,user.getUsername());
+            int ss = ps.executeUpdate();
+            if(ss==1){
+                return 1;
+            }else{
+                return 0;
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+          return 0;
+    }
 }

@@ -7,13 +7,19 @@ package user;
 
 import entity.Goods;
 import entity.User;
+import factory.CodeFactory;
+import factory.UserFactory;
+import java.util.Date;
+import java.util.Random;
+
 
 /**
  *
  * @author 良匠
  */
 public class UserPay extends javax.swing.JFrame {
-
+    String username;
+    User user = new User();
     /**
      * Creates new form UserPay
      */
@@ -24,6 +30,8 @@ public class UserPay extends javax.swing.JFrame {
     public UserPay(Goods goods,int num,String emai,User user) {
         initComponents();
         setLocationRelativeTo(null);
+        this.user = user;
+        this.username = user.getUsername();
         this.jLabel2.setText(goods.getGname());
         this.jLabel4.setText(String.valueOf(num));
         this.jLabel6.setText(String.valueOf(goods.getGprice()*num));
@@ -70,6 +78,11 @@ public class UserPay extends javax.swing.JFrame {
         });
 
         jButton2.setText("确定付款");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("你所购买的商品名称：");
 
@@ -147,6 +160,51 @@ public class UserPay extends javax.swing.JFrame {
         // TODO add your handling code here:
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        //点击确定付款，需要增加生产订单号，卡密，时间
+        String gname = this.jLabel2.getText();
+        int num = Integer.parseInt(this.jLabel4.getText());
+        int sumPrice = Integer.parseInt(this.jLabel6.getText());
+        String email = this.jLabel8.getText();
+        //生成本地时间
+        Date date = new Date();
+        String szDate = String.format("%tY年%tm月%td日", date,date,date);
+        System.out.println(szDate);
+        System.out.println(username);
+        //生成订单号       
+        String str="zxcvbnmlkjhgfdsaqwertyuiopQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+        Random random=new Random();
+        StringBuffer sb=new StringBuffer();
+        //长度为几就循环几次
+        for(int i=0; i<12; ++i){
+            //产生0-61的数字
+            int number=random.nextInt(62);
+            //将产生的数字通过length次承载到sb中
+            sb.append(str.charAt(number));
+        }
+        //将承载的字符转换成字符串
+        String onum =  sb.toString();
+        System.out.println(onum);
+        //获取卡密
+        String codes[] = CodeFactory.getCodeDAOInstance().getCode(gname, num);
+        //标记卡密已出售
+        for(int i = 0 ;i<codes.length;i++){
+            System.out.println(codes[i]);
+            CodeFactory.getCodeDAOInstance().useCode(codes[i]);
+        }
+        
+        //减掉用户余额
+       int nowMonry = user.getMoney()-sumPrice;
+       System.out.println(nowMonry);
+       user.setMoney(nowMonry);
+       UserFactory.getUserDAOInstance().updateUserMoney(user);
+
+       UserOrder userOrder = new UserOrder(onum,szDate,codes);
+       userOrder.setVisible(true);
+       dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

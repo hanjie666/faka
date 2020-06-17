@@ -5,16 +5,13 @@
  */
 package dao;
 
-import entity.User;
-
 /**
  *
  * @author 良匠
  */
-public interface UserDao {
-    //用户登录
-    User userLogin(User user);
-    
-    //用户扣除余额
-    int updateUserMoney(User user);
+public interface CodeDao {
+    //获取数据库卡密
+    String[] getCode(String gname,int num);
+    //标记卡密已使用
+    int useCode(String code);
 }
