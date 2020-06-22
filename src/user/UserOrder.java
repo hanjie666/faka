@@ -25,6 +25,7 @@ public class UserOrder extends javax.swing.JFrame {
     
     public UserOrder() {
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**

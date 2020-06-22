@@ -26,5 +26,14 @@ public interface GoodsDao {
     Goods getGoodsDetial(String gname);
     
     
+    /**
+     * 李思远
+     **/
+    //添加商品分类
+    void setGoodsCategory(Goods good);
+    
+    //添加商品
+    void setGoods(Goods goods);
+      
     
 }

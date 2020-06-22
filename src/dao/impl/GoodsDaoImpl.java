@@ -95,6 +95,37 @@ public class GoodsDaoImpl implements GoodsDao{
         } 
          return  null;
     }
-    
+
+    @Override
+    public void setGoodsCategory(Goods good) {
+        try{
+            String sql="insert into goodtype values (?,?)";
+            ps=this.con.prepareStatement(sql);
+            ps.setString(1,good.getGnum());
+            ps.setString(2,good.getGtypename());
+            int rs = ps.executeUpdate();
+        }catch(SQLException ex){
+            Logger.getLogger(AdminDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    @Override
+    public void setGoods(Goods goods) {
+         try{
+            String sql="insert into goods value(?,?,?,?,?,?)";
+            ps=this.con.prepareStatement(sql);
+            ps.setString(1, goods.getGnum());
+            ps.setString(2, goods.getGname());
+            ps.setInt(3, goods.getGstock());
+            ps.setInt(4, goods.getGprice());
+            ps.setString(5, goods.getGtypename());
+            ps.setString(6, goods.getGintroduce());
+            ResultSet rs = ps.executeQuery();
+        }catch (SQLException ex){
+           Logger.getLogger(AdminDaoImpl.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+        
+    }
+
     
 }

@@ -6,8 +6,10 @@
 package user;
 
 import entity.Goods;
+import entity.Order;
 import entity.User;
 import factory.CodeFactory;
+import factory.OrderFactory;
 import factory.UserFactory;
 import java.util.Date;
 import java.util.Random;
@@ -170,8 +172,7 @@ public class UserPay extends javax.swing.JFrame {
         int num = Integer.parseInt(this.jLabel4.getText());
         int sumPrice = Integer.parseInt(this.jLabel6.getText());
         int userMoney = user.getMoney();
-        String email = this.jLabel8.getText();
-        System.out.println(email);
+        String email = this.jLabel10.getText();
         //生成本地时间
         Date date = new Date();
         String szDate = String.format("%tY年%tm月%td日", date,date,date);
@@ -190,18 +191,27 @@ public class UserPay extends javax.swing.JFrame {
                 sb.append(str.charAt(number));
             }
             //将承载的字符转换成字符串
+            //订单编号
             String onum =  sb.toString();
             
             //获取卡密
             String codes[] = CodeFactory.getCodeDAOInstance().getCode(gname, num);
             
-            
-            //标记卡密已出售,拼接卡密
+            //生成订单信息写入数据库
+          Order order = new Order();
+
+          order.setGname(gname);
+          order.setOnum(onum);
+          order.setEmail(email);
+          order.setDate(szDate);
+            //标记卡密已出售,拼接卡密,并且生成订单
             StringBuffer kami = new StringBuffer();
             for(int i = 0 ;i<codes.length;i++){
                 CodeFactory.getCodeDAOInstance().useCode(codes[i]);
                 kami.append(codes[i]);
                 kami.append("\n");
+                order.setCodenum(codes[i]);
+                OrderFactory.getGoodsDAOInstance().addorder(order);
             }
             
             String kamis = kami.toString();
@@ -219,7 +229,10 @@ public class UserPay extends javax.swing.JFrame {
 
            UserOrder userOrder = new UserOrder(onum,szDate,kamis);
            userOrder.setVisible(true);
-
+           
+           
+          
+   
            dispose();        
         }else{
             JOptionPane.showMessageDialog(null,"余额不足");

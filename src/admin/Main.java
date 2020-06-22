@@ -5,10 +5,15 @@
  */
 package admin;
 
+import entity.Goods;
+import factory.GoodsFactory;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +28,11 @@ import utils.JDBCUtil;
 public class Main extends javax.swing.JFrame {
 
     
+    /**
+     * 骆宏伟 
+     **/
     
+    //用户余额充值
     public int Update(String id, String num) throws Exception{
         JDBCUtil dbc = new JDBCUtil();
         String sql = "update users set money = money + ? where username = ?";
@@ -33,8 +42,37 @@ public class Main extends javax.swing.JFrame {
         return pstmt.executeUpdate();
     }
     
+    //更新表格数据
+    void updateTable(){
+        DefaultTableModel tm = (DefaultTableModel) jTable5.getModel();
+        DefaultTableModel tm1 = (DefaultTableModel) jTable2.getModel();
+        DefaultTableModel tm2 = (DefaultTableModel) jTable4.getModel();
+        DefaultTableModel tm3 = (DefaultTableModel) jTable3.getModel();
+        DefaultTableModel tm4 = (DefaultTableModel) jTable2.getModel();
+        DefaultTableModel tm5 = (DefaultTableModel) jTable1.getModel();
+        while (tm.getRowCount() > 0) {
+          tm.removeRow(tm.getRowCount() - 1);
+        }
+        while (tm1.getRowCount() > 0) {
+          tm1.removeRow(tm1.getRowCount() - 1);
+        }
+        while (tm2.getRowCount() > 0) {
+          tm2.removeRow(tm2.getRowCount() - 1);
+        }
+        while (tm3.getRowCount() > 0) {
+          tm3.removeRow(tm3.getRowCount() - 1);
+        }
+        while (tm4.getRowCount() > 0) {
+          tm4.removeRow(tm4.getRowCount() - 1);
+        }
+        while (tm5.getRowCount() > 0) {
+          tm5.removeRow(tm5.getRowCount() - 1);
+        }
+        initUsers();
+        initCode(); 
+    }
     
-    
+    //初始化后台用户表格
      void initUsers(){
         JDBCUtil dbc = new JDBCUtil();
         try {
@@ -61,6 +99,7 @@ public class Main extends javax.swing.JFrame {
         }
     }
     
+     //初始化卡密列表，商品分类列表、商品列表
     void initCode(){
         JDBCUtil dbc = new JDBCUtil();
         try {
@@ -90,20 +129,21 @@ public class Main extends javax.swing.JFrame {
         try {
             DefaultTableModel dtm2=(DefaultTableModel)jTable1.getModel();
             Statement sta2 = dbc2.getCon().createStatement();
-            String sql2 = "select onum, gname, username, ctime, cmoney from orders"; 
+            String sql2 = "select onum, gname, ctime,codenum,email from orders"; 
             ResultSet rs2=sta2.executeQuery(sql2);
                 while (rs2.next()) {
                 String onum = rs2.getString("onum");
                 String gname = rs2.getString("gname");
-                String username = rs2.getString("username");
+                String email = rs2.getString("email");
                 String ctime = rs2.getString("ctime");
-                int cmoney = rs2.getInt("cmoney");
+                String codenum = rs2.getString("codenum");
+                
                 Vector v2 = new Vector();
                 v2.add(onum);
                 v2.add(gname);
-                v2.add(username);
+                v2.add(email);
                 v2.add(ctime);
-                v2.add(cmoney);
+                v2.add(codenum);
                 dtm2.addRow(v2);
             } 
             sta2.close();
@@ -160,17 +200,37 @@ public class Main extends javax.swing.JFrame {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        
-        
+ 
     }
     
+    /**
+     * 骆宏伟 删除已使用卡密和删除全部卡密
+     **/
     
+     public int Delete() throws Exception{
+        JDBCUtil dbc = new JDBCUtil();
+        String sql = "delete from gcode where state = ?";
+        PreparedStatement pstmt = dbc.getCon().prepareStatement(sql);
+        pstmt.setString(1, "0");
+        return pstmt.executeUpdate();
+    }
+    
+        public int DeleteAll() throws Exception{
+        JDBCUtil dbc = new JDBCUtil();
+        String sql = "delete from gcode";
+        PreparedStatement pstmt = dbc.getCon().prepareStatement(sql);
+        return pstmt.executeUpdate();
+    }
     
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
+        for(String goodstype : list){
+            this.jComboBox3.addItem(goodstype);
+        } 
         initCode();
         initUsers();
     }
@@ -195,7 +255,6 @@ public class Main extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
-        jButton12 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -224,6 +283,8 @@ public class Main extends javax.swing.JFrame {
         jTextField2 = new javax.swing.JTextField();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
+        jLabel22 = new javax.swing.JLabel();
+        jTextField7 = new javax.swing.JTextField();
         jPanel6 = new javax.swing.JPanel();
         jLabel14 = new javax.swing.JLabel();
         jComboBox3 = new javax.swing.JComboBox<>();
@@ -270,13 +331,6 @@ public class Main extends javax.swing.JFrame {
 
         jButton1.setText("保存");
 
-        jButton12.setText("用户充值");
-        jButton12.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton12ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -303,10 +357,8 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
-                    .addComponent(jButton12))
-                .addContainerGap(85, Short.MAX_VALUE))
+                .addComponent(jButton1)
+                .addContainerGap(109, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -329,9 +381,7 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(jLabel12)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addGap(45, 45, 45)
-                .addComponent(jButton12)
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addContainerGap(321, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("平台首页", jPanel1);
@@ -341,7 +391,7 @@ public class Main extends javax.swing.JFrame {
 
             },
             new String [] {
-                "订单号", "商品名称", "预留邮箱号", "成交时间", "数量", "金额"
+                "订单号", "商品名称", "预留邮箱号", "成交时间", "卡密"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -473,8 +523,18 @@ public class Main extends javax.swing.JFrame {
         jScrollPane3.setViewportView(jTable2);
 
         jButton5.setText("清除已使用卡密");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton6.setText("清空全部卡密");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -518,8 +578,21 @@ public class Main extends javax.swing.JFrame {
         jLabel13.setText("名称");
 
         jButton7.setText("添加");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
 
         jButton8.setText("删除选中");
+
+        jLabel22.setText("序号");
+
+        jTextField7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField7ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -532,34 +605,42 @@ public class Main extends javax.swing.JFrame {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 568, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGap(90, 90, 90)
-                        .addComponent(jLabel13)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel13)
+                            .addComponent(jLabel22))
                         .addGap(29, 29, 29)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(38, 38, 38)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                            .addComponent(jTextField7))
+                        .addGap(39, 39, 39)
                         .addComponent(jButton7)
-                        .addGap(77, 77, 77)
+                        .addGap(58, 58, 58)
                         .addComponent(jButton8)))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(65, 65, 65)
+                .addGap(66, 66, 66)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel13)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton7)
                     .addComponent(jButton8))
-                .addGap(54, 54, 54)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("添加商品分类", jPanel5);
 
         jLabel14.setText("请选择商品分类");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "请选择分类" }));
 
         jLabel15.setText("商品名称");
 
@@ -570,6 +651,11 @@ public class Main extends javax.swing.JFrame {
         jScrollPane5.setViewportView(jTextPane2);
 
         jButton9.setText("添加商品");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -688,6 +774,11 @@ public class Main extends javax.swing.JFrame {
                 "用户名", "用户密码", "余额"
             }
         ));
+        jTable5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable5MouseClicked(evt);
+            }
+        });
         jScrollPane7.setViewportView(jTable5);
 
         javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
@@ -764,12 +855,6 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        // TODO add your handling code here:
-        Deposit dps = new Deposit();
-        dps.setVisible(true);
-    }//GEN-LAST:event_jButton12ActionPerformed
-
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here
         String id = this.jTextField5.getText();
@@ -778,16 +863,71 @@ public class Main extends javax.swing.JFrame {
             int a = Update(id, money);
             if(a>0){       
               JOptionPane.showMessageDialog(null,"充值成功");
-              jTable5.repaint();
+              updateTable();
             }
             else{
               JOptionPane.showMessageDialog(null,"充值失败");
             }
         } catch (Exception ex) {
-            Logger.getLogger(Deposit.class.getName()).log(Level.SEVERE, null, ex);
+            ex.printStackTrace();
         }
         
     }//GEN-LAST:event_jButton13ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+         try{
+            Delete();
+            updateTable();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        // TODO add your handling code here:
+        try{
+            DeleteAll();
+            updateTable();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        // TODO add your handling code here:
+        String goodstype = this.jTextField2.getText();
+        String num = this.jTextField7.getText();
+        Goods goods = new Goods();
+        goods.setGtypename(goodstype);
+        goods.setGnum(num);
+        GoodsFactory.getGoodsDAOInstance().setGoodsCategory(goods);
+        updateTable();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField7ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // 李思远
+        //增加商品分类
+       
+        Goods good = new Goods();
+        String gtypename  = (String)jComboBox3.getItemAt(1);
+        System.out.print(gtypename);
+        String gname = this.jTextField3.getText();
+        String gprice = this.jTextField4.getText();
+        String message = this.jTextPane2.getText();
+        
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jTable5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable5MouseClicked
+        // TODO add your handling code here:
+        int selectRow = jTable5.getSelectedRow();
+        DefaultTableModel dtm=(DefaultTableModel)jTable5.getModel();
+        this.jTextField5.setText(dtm.getValueAt(selectRow,0).toString());
+    }//GEN-LAST:event_jTable5MouseClicked
 
     /**
      * @param args the command line arguments
@@ -828,7 +968,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
     private javax.swing.JButton jButton11;
-    private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -854,6 +993,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -889,6 +1029,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JTextPane jTextPane2;
     // End of variables declaration//GEN-END:variables

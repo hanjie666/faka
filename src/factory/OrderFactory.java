@@ -3,16 +3,16 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package dao;
+package factory;
 
-import entity.Order;
+import dao.proxy.OrderDaoProxy;
 
 /**
  *
  * @author 良匠
  */
-public interface OrderDao {
-    //生成订单
-    int addorder(Order order);
-    
+public class OrderFactory {
+     public static OrderDaoProxy getGoodsDAOInstance(){//取得DAO实例 
+         return new OrderDaoProxy();//返回代理实例 
+    } 
 }
