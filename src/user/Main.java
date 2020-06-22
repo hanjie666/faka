@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package user;
 
 import admin.*;
@@ -10,6 +5,7 @@ import entity.Goods;
 import entity.User;
 import factory.CodeFactory;
 import factory.GoodsFactory;
+import factory.UserFactory;
 import java.awt.ItemSelectable;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -17,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -32,17 +29,15 @@ import org.jvnet.substance.skin.ModerateSkin;
 import org.jvnet.substance.skin.RavenSkin;
 import org.jvnet.substance.skin.SaharaSkin;
 import org.jvnet.substance.skin.SubstanceAutumnLookAndFeel;
+import utils.SendMail;
 
 /**
  *
  * @author 良匠
  */
 public class Main extends javax.swing.JFrame {
-    User user = new User();
-    
-    
-    
-    
+    User users = new User();
+
     public void getGoods( List<Goods> list){
         this.jComboBox2.removeAllItems();
         for(Goods goods : list){
@@ -56,13 +51,16 @@ public class Main extends javax.swing.JFrame {
         this.jTextPane1.setText(goods.getGintroduce());
     }
     
+    
     /**
      * Creates new form Main
      */
     public Main(User user) {
         initComponents();
         setLocationRelativeTo(null);
-        this.user = user;
+        System.out.println(user.toString());
+        this.users = user;
+        System.out.println(this.users.toString());
         this.jLabel17.setText(user.getUsername());
         this.money.setText(String.valueOf(user.getMoney()));
         List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
@@ -92,8 +90,7 @@ public class Main extends javax.swing.JFrame {
     public Main() {
         initComponents();
         setLocationRelativeTo(null);
-        this.jLabel17.setText(user.getUsername());
-        
+        this.jLabel17.setText(users.getUsername());
         List<String> list = GoodsFactory.getGoodsDAOInstance().getAllGoodsCategory();
         for(String goodstype : list){
             this.jComboBox1.addItem(goodstype);
@@ -154,6 +151,11 @@ public class Main extends javax.swing.JFrame {
         jLabel18 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "请选择分类" }));
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
@@ -334,15 +336,27 @@ public class Main extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        User user = new User();
-        user.setUsername(this.jLabel17.getText());
-        user.setMoney(Integer.parseInt(this.money.getText()));
-        Goods goods = new Goods();
-        goods.setGname((String)this.jComboBox2.getSelectedItem());
-        goods.setGprice(Integer.parseInt(this.jLabel9.getText()));
-        UserPay pay = new UserPay(goods,Integer.parseInt(this.jTextField1.getText()),this.jTextField2.getText(),user);
-        pay.setVisible(true);
+        //如果库存大于购买数量则继续
+        if(Integer.parseInt(this.jLabel7.getText()) >= Integer.parseInt(this.jTextField1.getText()) & Integer.parseInt(this.jTextField1.getText())>0){
+            User user = new User();
+            user.setUsername(this.jLabel17.getText());
+            user.setMoney(Integer.parseInt(this.money.getText()));
+            Goods goods = new Goods();
+            goods.setGname((String)this.jComboBox2.getSelectedItem());
+            goods.setGprice(Integer.parseInt(this.jLabel9.getText()));
+            UserPay pay = new UserPay(goods,Integer.parseInt(this.jTextField1.getText()),this.jTextField2.getText(),user);
+            pay.setVisible(true);
+        }else{
+            JOptionPane.showMessageDialog(null,"库存不足");
+        }
+        
+        
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        this.money.setText(String.valueOf(UserFactory.getUserDAOInstance().getUserMoneyByUsername(this.jLabel17.getText())));
+    }//GEN-LAST:event_formMouseClicked
 
     /**
      * @param args the command line arguments

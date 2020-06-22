@@ -17,4 +17,7 @@ public interface UserDao {
     
     //用户扣除余额
     int updateUserMoney(User user);
+    
+    //根据用户名查询余额
+    int getUserMoneyByUsername(String username);
 }

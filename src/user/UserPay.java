@@ -11,6 +11,8 @@ import factory.CodeFactory;
 import factory.UserFactory;
 import java.util.Date;
 import java.util.Random;
+import javax.swing.JOptionPane;
+import utils.SendMail;
 
 
 /**
@@ -167,43 +169,66 @@ public class UserPay extends javax.swing.JFrame {
         String gname = this.jLabel2.getText();
         int num = Integer.parseInt(this.jLabel4.getText());
         int sumPrice = Integer.parseInt(this.jLabel6.getText());
+        int userMoney = user.getMoney();
         String email = this.jLabel8.getText();
+        System.out.println(email);
         //生成本地时间
         Date date = new Date();
         String szDate = String.format("%tY年%tm月%td日", date,date,date);
-        System.out.println(szDate);
-        System.out.println(username);
-        //生成订单号       
-        String str="zxcvbnmlkjhgfdsaqwertyuiopQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
-        Random random=new Random();
-        StringBuffer sb=new StringBuffer();
-        //长度为几就循环几次
-        for(int i=0; i<12; ++i){
-            //产生0-61的数字
-            int number=random.nextInt(62);
-            //将产生的数字通过length次承载到sb中
-            sb.append(str.charAt(number));
-        }
-        //将承载的字符转换成字符串
-        String onum =  sb.toString();
-        System.out.println(onum);
-        //获取卡密
-        String codes[] = CodeFactory.getCodeDAOInstance().getCode(gname, num);
-        //标记卡密已出售
-        for(int i = 0 ;i<codes.length;i++){
-            System.out.println(codes[i]);
-            CodeFactory.getCodeDAOInstance().useCode(codes[i]);
+        
+        //如果用户余额大于总价格，则往下执行
+        if(userMoney>=sumPrice){
+             //生成订单号       
+            String str="zxcvbnmlkjhgfdsaqwertyuiopQWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+            Random random=new Random();
+            StringBuffer sb=new StringBuffer();
+            //长度为几就循环几次
+            for(int i=0; i<12; ++i){
+                //产生0-61的数字
+                int number=random.nextInt(62);
+                //将产生的数字通过length次承载到sb中
+                sb.append(str.charAt(number));
+            }
+            //将承载的字符转换成字符串
+            String onum =  sb.toString();
+            
+            //获取卡密
+            String codes[] = CodeFactory.getCodeDAOInstance().getCode(gname, num);
+            
+            
+            //标记卡密已出售,拼接卡密
+            StringBuffer kami = new StringBuffer();
+            for(int i = 0 ;i<codes.length;i++){
+                CodeFactory.getCodeDAOInstance().useCode(codes[i]);
+                kami.append(codes[i]);
+                kami.append("\n");
+            }
+            
+            String kamis = kami.toString();
+
+            try{
+                SendMail.sendEmail("1564704018@qq.com",kamis);
+            }catch (Exception ex){
+                ex.printStackTrace();
+            }
+            //减掉用户余额
+           int nowMoney = user.getMoney()-sumPrice;
+           System.out.println(nowMoney);
+           user.setMoney(nowMoney);
+           UserFactory.getUserDAOInstance().updateUserMoney(user);
+
+           UserOrder userOrder = new UserOrder(onum,szDate,kamis);
+           userOrder.setVisible(true);
+
+           dispose();        
+        }else{
+            JOptionPane.showMessageDialog(null,"余额不足");
+        
         }
         
-        //减掉用户余额
-       int nowMonry = user.getMoney()-sumPrice;
-       System.out.println(nowMonry);
-       user.setMoney(nowMonry);
-       UserFactory.getUserDAOInstance().updateUserMoney(user);
-
-       UserOrder userOrder = new UserOrder(onum,szDate,codes);
-       userOrder.setVisible(true);
-       dispose();
+        
+       
+       
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

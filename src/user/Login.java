@@ -20,9 +20,9 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Login
      */
     public Login() {
-        
         initComponents();
         setLocationRelativeTo(null);
+       
     }
 
     /**
@@ -122,6 +122,7 @@ public class Login extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+      
         User user = new User();
         user.setUsername(this.jTextField1.getText());
         user.setPassword(this.jTextField2.getText());

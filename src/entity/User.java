@@ -38,6 +38,12 @@ public class User {
         this.money = money;
     }
 
+    @Override
+    public String toString() {
+        return "User{" + "username=" + username + ", password=" + password + ", money=" + money + '}';
+    }
+
+    
   
     
 }

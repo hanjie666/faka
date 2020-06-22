@@ -15,17 +15,12 @@ public class UserOrder extends javax.swing.JFrame {
      * Creates new form UserOrder
      */
     
-    public UserOrder(String onum,String date,String[] code){
+    public UserOrder(String onum,String date,String kamis){
         initComponents();
         this.jTextField1.setText(onum);
         this.jLabel5.setText(date);
-        StringBuffer sb=new StringBuffer();
-        for(int i = 0 ; i < code.length ; i++){
-            sb.append(code[i]);
-            sb.append("\n");
-        }
-        String codes = sb.toString();
-        this.jTextArea1.setText(codes);
+       
+        this.jTextArea1.setText(kamis);
     }
     
     public UserOrder() {
@@ -128,8 +123,6 @@ public class UserOrder extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         dispose();
-        Main m = new Main();
-        m.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

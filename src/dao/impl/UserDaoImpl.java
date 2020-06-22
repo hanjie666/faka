@@ -37,6 +37,7 @@ public class UserDaoImpl implements UserDao{
          User user1 = new User();
          while(rs.next()){
                user1.setUsername(rs.getString("username"));
+               user1.setPassword(rs.getString("password"));
                user1.setMoney(rs.getInt("money"));
          }
          return user1;
@@ -64,5 +65,23 @@ public class UserDaoImpl implements UserDao{
             Logger.getLogger(UserDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
           return 0;
+    }
+
+    @Override
+    public int getUserMoneyByUsername(String username) {
+        try {
+         String sql="select money from users where username = ?";
+         ps = this.con.prepareStatement(sql);
+         ps.setString(1,username);
+         ResultSet rs = ps.executeQuery();
+         User user1 = new User();
+         while(rs.next()){
+               return Integer.parseInt(rs.getString("money"));
+         }
+         
+     } catch (SQLException ex) {
+         Logger.getLogger(AdminDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+     } 
+       return 0;
     }
 }
