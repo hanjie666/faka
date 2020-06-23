@@ -13,7 +13,6 @@ package entity;
 public class Goods {
     private String gnum;
     private String gname;
-    private Integer gstock;
     private Integer gprice;
     private String gtypename;
     private String gintroduce;
@@ -34,13 +33,6 @@ public class Goods {
         this.gname = gname;
     }
 
-    public Integer getGstock() {
-        return gstock;
-    }
-
-    public void setGstock(Integer gstock) {
-        this.gstock = gstock;
-    }
 
     public Integer getGprice() {
         return gprice;
@@ -64,6 +56,11 @@ public class Goods {
 
     public void setGintroduce(String gintroduce) {
         this.gintroduce = gintroduce;
+    }
+
+    @Override
+    public String toString() {
+        return "Goods{" + "gnum=" + gnum + ", gname=" + gname + ", gprice=" + gprice + ", gtypename=" + gtypename + ", gintroduce=" + gintroduce + '}';
     }
 
     

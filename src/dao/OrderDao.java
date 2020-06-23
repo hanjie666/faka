@@ -15,4 +15,7 @@ public interface OrderDao {
     //生成订单
     int addorder(Order order);
     
+    //查找支付订单
+    String findPayOrder(String payOrder);
+    
 }

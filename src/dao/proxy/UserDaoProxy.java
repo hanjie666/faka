@@ -46,4 +46,11 @@ public class UserDaoProxy implements UserDao{
        dbc.closeCon();
        return res;
     }
+
+    @Override
+    public int addUserMoney(int money, String username) {
+       int res = dao.addUserMoney(money, username);
+       dbc.closeCon();
+       return res;
+    }
 }

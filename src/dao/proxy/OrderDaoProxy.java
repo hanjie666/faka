@@ -34,4 +34,11 @@ public class OrderDaoProxy implements OrderDao{
        dbc.closeCon();
        return res;
     }
+
+    @Override
+    public String findPayOrder(String payOrder) {
+       String res = dao.findPayOrder(payOrder);
+       dbc.closeCon();
+       return res;
+    }
 }

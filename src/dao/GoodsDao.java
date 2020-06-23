@@ -34,6 +34,8 @@ public interface GoodsDao {
     
     //添加商品
     void setGoods(Goods goods);
-      
+     
+    //删除商品分类
+    int delGoodsCategory(String name);
     
 }

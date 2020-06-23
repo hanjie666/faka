@@ -59,7 +59,6 @@ public class GoodsDaoImpl implements GoodsDao{
             Goods goods = new Goods();
             goods.setGnum(rs.getString("gnum"));
             goods.setGname(rs.getString("gname"));
-            goods.setGstock(rs.getInt("gstock"));
             goods.setGprice(rs.getInt("gprice"));
             goods.setGtypename(rs.getString("gtypename"));
             Gs.add(goods);
@@ -83,7 +82,6 @@ public class GoodsDaoImpl implements GoodsDao{
          while(rs.next()){
             goods.setGnum(rs.getString("gnum"));
             goods.setGname(rs.getString("gname"));
-            goods.setGstock(rs.getInt("gstock"));
             goods.setGprice(rs.getInt("gprice"));
             goods.setGtypename(rs.getString("gtypename"));
             goods.setGintroduce(rs.getString("gintroduce"));
@@ -112,19 +110,32 @@ public class GoodsDaoImpl implements GoodsDao{
     @Override
     public void setGoods(Goods goods) {
          try{
-            String sql="insert into goods value(?,?,?,?,?,?)";
+            String sql="insert into goods value(?,?,?,?,?)";
             ps=this.con.prepareStatement(sql);
-            ps.setString(1, goods.getGnum());
-            ps.setString(2, goods.getGname());
-            ps.setInt(3, goods.getGstock());
+            ps.setString(2, goods.getGnum());
+            ps.setString(3, goods.getGname());
             ps.setInt(4, goods.getGprice());
             ps.setString(5, goods.getGtypename());
-            ps.setString(6, goods.getGintroduce());
-            ResultSet rs = ps.executeQuery();
+            ps.setString(1, goods.getGintroduce());
+            ps.executeUpdate();
         }catch (SQLException ex){
            Logger.getLogger(AdminDaoImpl.class.getName()).log(Level.SEVERE, null, ex); 
         }
         
+    }
+
+    @Override
+    public int delGoodsCategory(String name) {
+         try{
+            String sql="delete from goodtype where gtype = ?";
+            ps=this.con.prepareStatement(sql);
+            ps.setString(1,name);
+            int i = ps.executeUpdate();
+            return i;
+        }catch (SQLException ex){
+           Logger.getLogger(AdminDaoImpl.class.getName()).log(Level.SEVERE, null, ex); 
+        }
+         return 0;
     }
 
     

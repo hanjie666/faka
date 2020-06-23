@@ -20,4 +20,7 @@ public interface UserDao {
     
     //根据用户名查询余额
     int getUserMoneyByUsername(String username);
+    
+    //用户充值余额
+    int addUserMoney(int money,String username);
 }

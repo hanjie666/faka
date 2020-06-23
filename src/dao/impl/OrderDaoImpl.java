@@ -9,6 +9,7 @@ import dao.OrderDao;
 import entity.Order;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,29 @@ public class OrderDaoImpl implements OrderDao{
             Logger.getLogger(OrderDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
+    }
+
+    @Override
+    public String findPayOrder(String payOrder) {
+        try{
+            String sql="select * from pay_order where orderNum = ?";
+            ps=this.con.prepareStatement(sql);
+            ps.setString(1,payOrder);
+            ResultSet rs  = ps.executeQuery();
+            while(rs.next()){
+                return rs.getString("orderNum");
+            }
+        }catch(SQLException ex){
+            Logger.getLogger(OrderDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }finally{
+            try {
+                ps.close();
+            } catch (SQLException ex) {
+                Logger.getLogger(OrderDaoImpl.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
     }
     
 }

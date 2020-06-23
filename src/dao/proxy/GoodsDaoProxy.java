@@ -57,7 +57,15 @@ public class GoodsDaoProxy implements GoodsDao{
     
     @Override
     public void setGoods(Goods goods){
-        dao.setGoodsCategory(goods);
+        dao.setGoods(goods);
+        dbc.closeCon();
+    }
+
+    @Override
+    public int delGoodsCategory(String name) {
+        int i = dao.delGoodsCategory(name);
+        dbc.closeCon();
+        return i;
     }
 
 }
